@@ -19,8 +19,8 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
-    "types": ["node", "webpack-env"],
-    "typeRoots": ["./types"],
+    // "types": ["node", "webpack-env"],
+    // "typeRoots": ["./types"],
     "baseUrl": "src"
   },
   "include": ["src"]

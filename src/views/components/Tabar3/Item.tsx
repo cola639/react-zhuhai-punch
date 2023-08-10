@@ -49,7 +49,7 @@ const Wrap = styled.li`
     justify-content: center;
     align-items: center;
     /* tabbar高度 */
-    height: 50px;
+    height: 60px;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   }
   .link div,

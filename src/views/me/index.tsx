@@ -24,11 +24,7 @@ const Me: FC<IMe> = () => {
     setName('Me2')
   }
 
-  return (
-    <Warp className="flex-center" onClick={handleClick}>
-      <Tabar />
-    </Warp>
-  )
+  return <Warp className="flex-center" onClick={handleClick}></Warp>
 }
 
 const Warp = styled.div`

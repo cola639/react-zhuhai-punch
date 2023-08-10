@@ -1,78 +1,46 @@
-import { FC, useState, useEffect } from 'react'
-import { useLocation, useNavigate, Outlet } from 'react-router-dom'
+import { FC, useEffect } from 'react'
+import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 
 // ui lib
-import { Badge, TabBar } from 'antd-mobile'
-import {
-  AppOutline,
-  MessageOutline,
-  MessageFill,
-  UnorderedListOutline,
-  UserOutline
-} from 'antd-mobile-icons'
-
+import { ReactComponent as CalculateIcon } from '@/assets/icons/calculate.svg'
+import { ReactComponent as PunchIcon } from '@/assets/icons/punch.svg'
 // components
+import Tabar from '../components/Tabar3/tabar'
 
 // hooks
 
 // options
 const tabs = [
-  {
-    key: '/',
-    title: '首页',
-    icon: <AppOutline />,
-    badge: Badge.dot
-  },
-  {
-    key: '/me',
-    title: '我的',
-    icon: <UserOutline />
-  }
+  { name: '打卡', url: '/', icon: <PunchIcon />, iconFilled: <PunchIcon /> },
+  { name: '统计', url: '/statistics', icon: <CalculateIcon />, iconFilled: <CalculateIcon /> }
 ]
 
 // ==============================|| TEMPLATE ||============================== //
-interface IIndex {}
 
-const Index: FC<IIndex> = () => {
-  const { pathname } = useLocation()
-  const navigate = useNavigate()
-
+const Index: FC = () => {
   useEffect(() => {
     return () => {}
   }, [])
 
-  const navigateRoute = (url: string) => {
-    navigate(url)
-  }
-
   return (
-    <Wrap>
+    <Container>
       <div className="layout-content">
         <Outlet />
       </div>
       <div className="layout-footer">
-        <TabBar activeKey={pathname} onChange={value => navigateRoute(value)}>
-          {tabs.map(item => (
-            <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
-          ))}
-        </TabBar>
+        <Tabar tabs={tabs} />
       </div>
-    </Wrap>
+    </Container>
   )
 }
 
-const Wrap = styled.div`
+const Container = styled.div`
   height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background-color: #f4f4f4;
 
   .layout-content {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 13.3333vw;
+    padding-bottom: 60px;
   }
 
   .layout-footer {
@@ -80,7 +48,6 @@ const Wrap = styled.div`
     background-color: #fff;
     position: fixed;
     bottom: 0;
-    border-top: solid 1px var(--adm-color-border);
   }
 `
 

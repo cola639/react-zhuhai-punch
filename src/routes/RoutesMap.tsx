@@ -6,7 +6,7 @@ import NavigationScroll from './guards/NavigationScroll'
 
 // sample page routing
 const HomePage = Loadable(lazy(() => import('views/home')))
-const MePage = Loadable(lazy(() => import('views/me')))
+const StatisticsPage = Loadable(lazy(() => import('views/statistics')))
 
 type Route = {
   path: string
@@ -25,9 +25,9 @@ const RoutesMap: Route[] = [
     )
   },
   {
-    path: '/me',
-    title: '个人页',
-    element: <MePage />
+    path: '/statistics',
+    title: '打卡统计页',
+    element: <StatisticsPage />
   }
 ]
 

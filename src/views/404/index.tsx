@@ -13,7 +13,7 @@ import styled from 'styled-components'
 interface Iindex {}
 
 const index: FC<Iindex> = () => {
-  const [name, setName] = useState('index')
+  const [name, setName] = useState('nouFound')
 
   useEffect(() => {
     return () => {}
