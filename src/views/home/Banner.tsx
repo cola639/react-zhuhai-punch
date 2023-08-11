@@ -47,7 +47,8 @@ const Banner: FC<IBanner> = () => {
 
 const Wrap = styled.div`
   background-color: #fff;
-  padding: 10px;
+  padding: 6px;
+  height: 8vh;
 
   .title {
     font-weight: 700;

@@ -54,7 +54,7 @@ const Wrap = styled.div`
   margin-top: 10px;
   .timeline {
     width: 100%;
-    height: 60vh;
+    height: 50vh;
     background-color: #fff;
     border-radius: 6px;
     position: relative;
@@ -82,7 +82,8 @@ const Wrap = styled.div`
   .description {
     border-radius: 6px;
     width: 100%;
-    height: 15vh;
+    height: 12vh;
+    max-height: 15vh;
     margin-top: 10px;
     background-color: #fff;
     .description_icon {

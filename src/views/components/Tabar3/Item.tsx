@@ -97,8 +97,8 @@ const Wrap = styled.li`
     transition: height 0.25s ease;
   }
   .link div span:last-child svg {
-    fill: ${props => (props.color ? props.color : '#5628ee')};
-    stroke: ${props => (props.color ? props.color : '#5628ee')};
+    fill: ${props => (props.color ? props.color : '#47a8f2')};
+    stroke: ${props => (props.color ? props.color : '#47a8f2')};
   }
   .link strong {
     font-size: 10px;
@@ -121,7 +121,7 @@ const Wrap = styled.li`
   }
   /* 文字 */
   &.active .link strong {
-    color: ${props => (props.color ? props.color : '#5628ee')};
+    color: ${props => (props.color ? props.color : '#47a8f2')};
     font-weight: 700;
   }
 

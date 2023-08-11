@@ -23,7 +23,7 @@ const TabBar: FC<ITabBar> = ({ tabs }) => {
             tab={tab}
             handleActive={handleActive}
             activeTab={pathname}
-            color={'#5628ee'}
+            color={'#47a8f2'}
           />
         ))}
       </ul>

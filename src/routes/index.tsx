@@ -2,7 +2,8 @@ import { useRoutes } from 'react-router-dom'
 
 // routes
 import RoutesMap from './RoutesMap'
-import NotFound from './404'
+import { RedirectNotFound, NotFound } from './404'
+
 import MainLaylout from 'views/layout'
 
 const GuestRoutes = {
@@ -16,5 +17,5 @@ const AuthRoutes = {}
 
 export default function ThemeRoutes() {
   // return useRoutes([LoginRoutes, AuthenticationRoutes, MainRoutes])
-  return useRoutes([GuestRoutes, NotFound])
+  return useRoutes([GuestRoutes, RedirectNotFound, NotFound])
 }

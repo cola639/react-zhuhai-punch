@@ -17,7 +17,7 @@ type Route = {
 const RoutesMap: Route[] = [
   {
     path: '/',
-    title: '首页',
+    title: '打卡',
     element: (
       <NavigationScroll>
         <HomePage />
@@ -26,7 +26,7 @@ const RoutesMap: Route[] = [
   },
   {
     path: '/statistics',
-    title: '打卡统计页',
+    title: '打卡统计',
     element: <StatisticsPage />
   }
 ]
