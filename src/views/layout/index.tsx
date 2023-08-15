@@ -3,8 +3,8 @@ import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 
 // ui lib
-import { ReactComponent as CalculateIcon } from '@/assets/icons/calculate.svg'
-import { ReactComponent as PunchIcon } from '@/assets/icons/punch.svg'
+import { ReactComponent as CalculateIcon } from '@/assets/icons/calculate_v1.svg'
+import { ReactComponent as PunchIcon } from '@/assets/icons/punch_v1.svg'
 // components
 import Tabar from '../components/Tabar3/tabar'
 

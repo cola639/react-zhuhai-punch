@@ -14,6 +14,8 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
+    console.log('config', JSON.stringify(config))
+
     // do something before request is sent
 
     // if (token) {
@@ -22,6 +24,14 @@ service.interceptors.request.use(
     //     // please modify it according to the actual situation
     //     config.headers['Authorization'] = getToken();
     // }
+
+    // if (config.url && config.url.startsWith('/tencent')) {
+    //   config.baseURL = process.env.REACT_APP_TENCENT_MAP
+    //   config.url = config.url.replace('/tencent', '') // remove the prefix
+    // }
+
+    console.log('config', JSON.stringify(config))
+
     return config
   },
   error => {
@@ -90,7 +100,7 @@ service.interceptors.response.use(
 
       return Promise.reject(new Error(res.msg || 'Error'))
     } else {
-      return response
+      return res
     }
   },
   error => {

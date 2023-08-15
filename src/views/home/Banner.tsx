@@ -1,37 +1,27 @@
 import { FC, useState, useEffect } from 'react'
 import styled from 'styled-components'
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn' // 导入中文语言包
 
-// ui lib
-
-// components
 import { ReactComponent as CalendarIcon } from '@/assets/icons/calendar.svg'
 
-// hooks
-
-// options
-
-// ==============================|| Banner ||============================== //
 interface IBanner {}
 
 const Banner: FC<IBanner> = () => {
-  // 获取当前日期对象
-  const today = new Date()
+  const [formattedDate, setFormattedDate] = useState('')
 
-  // 获取月份 (月份是从0开始的，所以我们要加1)
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-
-  // 获取日期 (日)
-  const date = String(today.getDate()).padStart(2, '0')
-
-  // 获取星期
-  const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
-  const dayOfWeek = weekDays[today.getDay()]
-
-  // 组合所有信息
-  const formattedDate = `${month}月${date}日·${dayOfWeek}`
+  const updateDate = () => {
+    const currentDate = dayjs().locale('zh-cn')
+    const formatted = `${currentDate.format('MM月DD日·dddd')}`
+    setFormattedDate(formatted)
+  }
 
   useEffect(() => {
-    return () => {}
+    updateDate() // 初始化时更新日期
+
+    const interval = setInterval(updateDate, 1000) // 每秒更新日期
+
+    return () => clearInterval(interval) // 组件卸载时清除定时器
   }, [])
 
   return (

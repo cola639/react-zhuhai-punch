@@ -56,8 +56,8 @@
   },
   "useEffect Hook": {
     "prefix": "useeffect",
-    "body": ["useEffect(() => {return () => {}}, [])"],
-    "description": "Log output to react useEffect template"
+    "body": ["useEffect(() => {", "  ", "  return () => {}", "}, [])"],
+    "description": "React useEffect template"
   },
   "useMemo Hook": {
     "prefix": "usememo",

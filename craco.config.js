@@ -2,7 +2,7 @@ const path = require('path')
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const TerserPlugin = require('terser-webpack-plugin')
-const WebpackBar = require('webpackbar')                      // webpack 进度条
+const WebpackBar = require('webpackbar') // webpack 进度条
 const WorkBoxPlugin = require('workbox-webpack-plugin')
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -11,16 +11,25 @@ module.exports = {
   devServer: {
     open: false,
     port: 8989,
-    https: true
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:3000',
-    //     changeOrigin: true,
-    //     secure: false,
-    //   }
-    // }
+    https: false,
+    proxy: {
+      // 代理baseUrl即 process.env.REACT_APP_API_URL
+      '/dev-api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/tencent': {
+        target: 'https://apis.map.qq.com',
+        pathRewrite: {
+          '^/tencent': ''
+        },
+        changeOrigin: true,
+        secure: false
+      }
+    }
   },
-  
+
   webpack: {
     alias: {
       '@': path.resolve(__dirname, 'src/')
@@ -40,7 +49,6 @@ module.exports = {
       }
 
       if (isProd) {
-        
         // Drop console
         webpackConfig.optimization.minimizer = [
           new TerserPlugin({
@@ -76,7 +84,7 @@ module.exports = {
         }
       }
       return webpackConfig
-    },
+    }
   },
 
   babel: {
@@ -84,10 +92,10 @@ module.exports = {
       [
         'babel-plugin-styled-components',
         {
-          displayName: true,
-        },
-      ],
-    ],
+          displayName: true
+        }
+      ]
+    ]
   },
-  plugins: [],
+  plugins: []
 }

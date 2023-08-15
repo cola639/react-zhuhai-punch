@@ -17,7 +17,7 @@ const HomePage = () => {
 }
 
 const Wrap = styled.div`
-  min-height: calc(100vh - 49px);
+  min-height: calc(100vh - 50px);
   width: 100%;
   background-color: #f4f4f4;
 `
