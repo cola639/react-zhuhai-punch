@@ -2,6 +2,7 @@ import { lazy, ReactElement } from 'react'
 
 // project imports
 import Loadable from 'components/progress/Loadable'
+import AuthGuard from './guards/AuthGuard'
 import NavigationScroll from './guards/NavigationScroll'
 
 // sample page routing
@@ -19,15 +20,21 @@ const RoutesMap: Route[] = [
     path: '/',
     title: '打卡',
     element: (
-      <NavigationScroll>
-        <HomePage />
-      </NavigationScroll>
+      <AuthGuard>
+        <NavigationScroll>
+          <HomePage />
+        </NavigationScroll>
+      </AuthGuard>
     )
   },
   {
     path: '/statistics',
     title: '打卡统计',
-    element: <StatisticsPage />
+    element: (
+      <AuthGuard>
+        <StatisticsPage />
+      </AuthGuard>
+    )
   }
 ]
 

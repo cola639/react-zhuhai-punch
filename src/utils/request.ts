@@ -14,8 +14,7 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    console.log('config', JSON.stringify(config))
-
+    // console.log('🚀 >> config:', config)
     // do something before request is sent
 
     // if (token) {
@@ -29,8 +28,6 @@ service.interceptors.request.use(
     //   config.baseURL = process.env.REACT_APP_TENCENT_MAP
     //   config.url = config.url.replace('/tencent', '') // remove the prefix
     // }
-
-    console.log('config', JSON.stringify(config))
 
     return config
   },
@@ -54,11 +51,10 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    console.log('🚀 >> response:', response)
     const res = response.data
 
     // if the custom code is not 200, it is judged as an error.
-    if (res.code !== 200) {
+    if (res.code !== 200 && res.code !== 0) {
       // Toast({
       //   message: res.msg || 'Error',
       //   type: 'fail',

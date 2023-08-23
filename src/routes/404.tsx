@@ -8,8 +8,6 @@ const ErrorPage = Loadable(lazy(() => import('views/404')))
 
 // ==============================|| MAIN ROUTING ||============================== //
 
-// ==============================|| MAIN ROUTING ||============================== //
-
 export const RedirectNotFound = {
   path: '/*',
   element: <Navigate to="/404" />

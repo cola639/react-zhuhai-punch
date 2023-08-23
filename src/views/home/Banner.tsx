@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from 'react'
-import styled from 'styled-components'
+import { useSelector } from 'store'
 import dayjs from 'dayjs'
+import styled from 'styled-components'
 import 'dayjs/locale/zh-cn' // 导入中文语言包
 
 import { ReactComponent as CalendarIcon } from '@/assets/icons/calendar.svg'
@@ -8,6 +9,7 @@ import { ReactComponent as CalendarIcon } from '@/assets/icons/calendar.svg'
 interface IBanner {}
 
 const Banner: FC<IBanner> = () => {
+  const punchConfig = useSelector(state => state.punch.punchConfig)
   const [formattedDate, setFormattedDate] = useState('')
 
   const updateDate = () => {
@@ -29,7 +31,11 @@ const Banner: FC<IBanner> = () => {
       <div className="title">{formattedDate}</div>
       <div className="flex-center">
         <CalendarIcon className="icon-small icon" />
-        <span className="desc">考勤规则-08:30~17:00</span>
+        <span className="desc">
+          {`考勤规则-${punchConfig.punchStart ? punchConfig.punchStart : ''}~${
+            punchConfig.punchEnd ? punchConfig.punchEnd : ''
+          }`}
+        </span>
       </div>
     </Wrap>
   )

@@ -11,11 +11,25 @@ import Routes from 'routes'
 // import { AWSCognitoProvider as AuthProvider } from 'contexts/AWSCognitoContext';
 // import { Auth0Provider as AuthProvider } from 'contexts/Auth0Context';
 import useTitle from 'hooks/useTitle'
+import { useEffect } from 'react'
+import { dispatch } from 'store'
+import { setOpenId } from 'store/slices/punch'
+import { useLocation } from 'react-router-dom'
 
 // ==============================|| APP ||============================== //
 
 const App = () => {
+  const { search } = useLocation()
+  const queryParams = new URLSearchParams(search)
   useTitle()
+
+  useEffect(() => {
+    const openId = queryParams.get('openId') || localStorage.getItem('openId')
+    console.log('🚀 >> useEffect >> openId:', openId)
+    dispatch(setOpenId(openId))
+    localStorage.setItem('openId', openId as string)
+    return () => {}
+  }, [])
 
   return (
     <>

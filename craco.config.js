@@ -15,7 +15,10 @@ module.exports = {
     proxy: {
       // 代理baseUrl即 process.env.REACT_APP_API_URL
       '/dev-api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:8310',
+        pathRewrite: {
+          '^/dev-api': ''
+        },
         changeOrigin: true,
         secure: false
       },

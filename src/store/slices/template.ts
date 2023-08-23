@@ -5,7 +5,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 // project imports
 import { dispatch } from '../index'
-import { apiLogin } from 'api/user'
+import { apiLogin } from 'api/punch'
 
 // initial state
 const initialState: TemplateProps = {
@@ -18,6 +18,7 @@ const template = createSlice({
   name: 'template',
   initialState,
   reducers: {
+    // actionCreate
     activeItem(state, action) {
       state.value = action.payload
     },

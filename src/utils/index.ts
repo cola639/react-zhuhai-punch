@@ -42,7 +42,10 @@ function rad(d) {
   return (d * Math.PI) / 180.0
 }
 
-// 根据经纬度计算距离，参数分别为第一点的纬度，经度；第二点的纬度，经度
+/** 根据两点经纬度 计算距离
+ * @param {string} lat1 lat1, lng1, lat2, lng2 第一点的纬度，经度 第二点的纬度，经度
+ * @returns {Object}
+ */
 export function getDistances(lat1, lng1, lat2, lng2) {
   var radLat1 = rad(lat1)
   var radLat2 = rad(lat2)
@@ -83,4 +86,26 @@ export function getDistances(lat1, lng1, lat2, lng2) {
     distance_str: distance_str
   }
   return objData
+}
+
+/** 获取当前url中参数
+ * @param {string} url
+ * @returns {Object}
+ */
+export function paramToObj(url = window.location.href) {
+  const search = decodeURIComponent(url.split('?')[1]).replace(/\+/g, ' ')
+  if (!search) {
+    return {}
+  }
+  const obj = {}
+  const searchArr = search.split('&')
+  searchArr.forEach(v => {
+    const index = v.indexOf('=')
+    if (index !== -1) {
+      const name = v.substring(0, index)
+      const val = v.substring(index + 1, v.length)
+      obj[name] = val
+    }
+  })
+  return obj
 }

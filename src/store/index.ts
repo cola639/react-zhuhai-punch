@@ -6,7 +6,7 @@ import {
   TypedUseSelectorHook
 } from 'react-redux'
 
-// project imports
+// reducers
 import rootReducer from './reducer'
 
 // ==============================|| REDUX - MAIN STORE ||============================== //
@@ -16,11 +16,9 @@ const store = configureStore({
 })
 
 export type RootState = ReturnType<typeof rootReducer>
-
 export type AppDispatch = typeof store.dispatch
 
 const { dispatch } = store
-
 const useDispatch = () => useAppDispatch<AppDispatch>()
 const useSelector: TypedUseSelectorHook<RootState> = useAppSelector
 

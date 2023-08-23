@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useSelector, useDispatch } from 'store'
+import { getPunchConfig, setOpenId } from 'store/slices/punch'
+import { paramToObj } from 'utils/index'
 
 // project imports
-import useAuth from 'hooks/useAuth'
 import { GuardProps } from 'types'
 
 // ==============================|| AUTH GUARD ||============================== //
@@ -12,14 +14,20 @@ import { GuardProps } from 'types'
  * @param {PropTypes.node} children children element/node
  */
 const AuthGuard = ({ children }: GuardProps) => {
-  const isLoggedIn = 'isLogin'
+  const { pathname } = useLocation()
+  const checkedUser = useSelector(state => state.punch.checkedUser)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const openId = useSelector(state => state.punch.openId)
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('login', { replace: true })
+    if (!checkedUser) {
+      if (openId) {
+        dispatch(setOpenId(openId))
+        dispatch(getPunchConfig(pathname, openId, navigate))
+      }
     }
-  }, [isLoggedIn, navigate])
+  }, [checkedUser, openId])
 
   return children
 }

@@ -1,11 +1,13 @@
 import { FC, useState, useEffect, useRef } from 'react'
 import { getTencentGeocoder } from 'api/map'
+import { punchRecord, getRecord } from 'api/punch'
 import { ReactComponent as PunchIcon } from '@/assets/icons/punch.svg'
-import { Steps } from 'antd-mobile'
-import styled from 'styled-components'
+import { Steps, Toast } from 'antd-mobile'
 import { TENCENT_APPKEY } from 'constant'
-import haversine from 'haversine'
 import dayjs from 'dayjs'
+import haversine from 'haversine'
+import styled from 'styled-components'
+import { useSelector } from 'store'
 
 // options
 const { Step } = Steps
@@ -17,25 +19,20 @@ const geolocation = new qq.maps.Geolocation(TENCENT_APPKEY, 'location_app')
 interface ITimeLine {}
 
 const TimeLine: FC<ITimeLine> = () => {
+  const punchConfig = useSelector(state => state.punch.punchConfig)
+  const openId = useSelector(state => state.punch.openId)
+  const [todayPunch, setTodayPunch] = useState<any>()
   const [isRange, setIsRange] = useState(false)
+  const [isFirstPunch, setIsFirstPunch] = useState(false)
+  const [isUpdatePunchEnd, setIsUpdatePunchEnd] = useState(false)
   const [isRequest, setIsRequest] = useState(false)
   const [currentTime, setCurrentTime] = useState(dayjs().format('HH:mm'))
   const isRequestRef = useRef(isRequest) // 使用ref来存储请求状态
 
   useEffect(() => {
-    getAddress()
+    punchConfig.punchLat && getAddress()
     return () => {}
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(dayjs().format('HH:mm'))
-    }, 1000)
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
+  }, [punchConfig])
 
   // useEffect(() => {
   //   const intervalId = setInterval(() => {
@@ -49,10 +46,42 @@ const TimeLine: FC<ITimeLine> = () => {
   //   }
   // }, [])
 
+  useEffect(() => {
+    openId && getTodayRecord()
+    return () => {}
+  }, [openId])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(dayjs().format('HH:mm'))
+    }, 1000)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (todayPunch?.punchTimeEnd) setIsUpdatePunchEnd(true)
+  }, [todayPunch])
+
+  const getTodayRecord = async () => {
+    const params = {
+      openId,
+      punchDate: dayjs().format('YYYY-MM-DD')
+    }
+
+    const { data } = await getRecord(params)
+    if (!data.length) return setIsFirstPunch(true)
+    setTodayPunch(data[0])
+    setIsFirstPunch(false)
+  }
+
   const getAddress = () => {
     console.log('开始获取经纬度')
     setIsRequest(true)
     const options = { timeout: 10 * 1000 }
+
     // 加载完成后就取当前位置
     geolocation.getLocation(showPosition, showErr, options)
 
@@ -60,18 +89,17 @@ const TimeLine: FC<ITimeLine> = () => {
       console.log('position', position.lat, position.lng)
       console.log('position.lat', position.lat)
       console.log('position.lng', position.lng)
-      const animeStarPosition = {
-        latitude: 23.125741,
-        longitude: 113.264985
+      const bakcendPosition = {
+        latitude: Number(punchConfig.punchLat) as number,
+        longitude: Number(punchConfig.punchLng) as number
       }
-
       const currentPosition = {
         latitude: position.lat,
         longitude: position.lng
       }
-      const distance = haversine(animeStarPosition, currentPosition, { unit: 'meter' })
-      distance < 500 ? setIsRange(true) : setIsRange(false)
-      console.log('🚀 >> showPosition >> distance:', `${distance} m`)
+      const distance = haversine(bakcendPosition, currentPosition, { unit: 'meter' })
+      distance < (punchConfig.punchRadius as number) ? setIsRange(true) : setIsRange(false)
+      console.log('🚀 >> showPosition >> distance:', `${distance}m`)
 
       setIsRequest(false)
       // 解析地址
@@ -84,6 +112,38 @@ const TimeLine: FC<ITimeLine> = () => {
     }
   }
 
+  const handlePunch = async () => {
+    if (!isRange) return
+    const tempObj = isFirstPunch
+      ? { punchTimeStart: dayjs().format('YYYY-MM-DD HH:mm:ss') }
+      : { id: todayPunch.id, punchTimeEnd: dayjs().format('YYYY-MM-DD HH:mm:ss') }
+
+    const data = {
+      openId,
+      deptId: punchConfig.deptId,
+      punchDate: dayjs().format('YYYY-MM-DD'),
+      ...tempObj
+    }
+
+    console.log('🚀 >> Punch data:', data)
+
+    try {
+      const res: any = await punchRecord(data)
+      if (res.code === 0)
+        Toast.show({
+          content: '打卡成功',
+          duration: 1000
+        })
+    } catch (error) {
+      Toast.show({
+        content: '打卡失败，请重试',
+        duration: 1000
+      })
+    } finally {
+      getTodayRecord()
+    }
+  }
+
   const convertAddress = async (lat: number, lng: number) => {
     console.log(`address: ${lat} ${lng}`)
 
@@ -91,11 +151,6 @@ const TimeLine: FC<ITimeLine> = () => {
 
     const standard_address = res.data.result.formatted_addresses.standard_address
     console.log('standard_address', standard_address)
-  }
-
-  const handlePunch = () => {
-    if (!isRange) return
-    // ajax 进行打卡记录
   }
 
   return (
@@ -111,24 +166,35 @@ const TimeLine: FC<ITimeLine> = () => {
           }}
         >
           <Step
-            title={`签到时间 ${currentTime}`}
-            description="最晚签到时间：08：30"
-            status="process"
+            title={`签到时间 ${
+              todayPunch?.punchTimeStart ? dayjs(todayPunch.punchTimeStart).format('HH:mm') : ''
+            }`}
+            description={`最晚签到时间：${punchConfig.punchStart ? punchConfig.punchStart : ''}`}
+            status={isFirstPunch ? 'process' : 'wait'}
           />
-          <Step title="签退时间" description="最早签到时间：17：30" status="wait" />
+          <Step
+            title={`签退时间 ${
+              todayPunch?.punchTimeEnd ? dayjs(todayPunch.punchTimeEnd).format('HH:mm') : ''
+            }`}
+            description={`最早签退时间：${punchConfig.punchEnd ? punchConfig.punchEnd : ''}`}
+            status={!isFirstPunch ? 'process' : 'wait'}
+          />
         </Steps>
         <button
           className={`flex-column timeline_punch ${isRange ? 'can_punch breath' : 'no_punch'}`}
           onClick={handlePunch}
         >
-          <span>打卡</span>
+          {isRequest && <span>定位中...</span>}
+          {isFirstPunch && <span>签到</span>}
+          {!isRequest && !isFirstPunch && !isUpdatePunchEnd && <span>签退</span>}
+          {!isRequest && !isFirstPunch && isUpdatePunchEnd && <span>更新签退</span>}
           <span className="timeline_punch_time">{currentTime}</span>
         </button>
       </div>
       <div className="flex-center description">
         <PunchIcon className="icon-middle description_icon" />
         {isRange && (
-          <span className="description_text">已进入考勤范围 - 珠海市香洲区梅华西路96号</span>
+          <span className="description_text">已进入考勤范围 - {punchConfig.punchAddress}</span>
         )}
         {!isRange && <span className="description_text_error">不在考勤范围！</span>}
       </div>
@@ -152,12 +218,12 @@ const Wrap = styled.div`
       bottom: 5.3333vw;
       left: 50%;
       transform: translateX(-50%);
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
       color: #fff;
       border: none;
-      font-size: 16px;
+      font-size: 15px;
       .timeline_punch_time {
         margin-top: 6px;
         font-size: 14px;
@@ -176,8 +242,7 @@ const Wrap = styled.div`
   .description {
     border-radius: 6px;
     width: 100%;
-    height: 13vh;
-    max-height: 15vh;
+    height: 16vh;
     margin-top: 10px;
     background-color: #fff;
     .description_icon {
